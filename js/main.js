@@ -13,16 +13,16 @@ var safeMod = false;
 
 // DOCUMENT READY
 $(function() {
-	
+
 	// ------------------------------
 	// DETECT TOUCH DEVICES
 	if(jQuery.browser.touch) {
-		$('html').addClass('touch');	
+		$('html').addClass('touch');
 	}
 	// ------------------------------
-	
-	
-	
+
+
+
 	// ------------------------------
 	// PORTFOLIO DETAILS
 	// if url contains a portfolio detail url
@@ -30,10 +30,10 @@ $(function() {
 	initializeAnimations();
 	var detailUrl = giveDetailUrl();
 	// ------------------------------
-	
-	
+
+
 	// ------------------------------
-	// FULL BROWSER BACK BUTTON SUPPORT 
+	// FULL BROWSER BACK BUTTON SUPPORT
 	$.address.change(function() {
 			var detailUrl = giveDetailUrl();
 			if(detailUrl != -1 ) {
@@ -43,35 +43,35 @@ $(function() {
 					hideProjectDetails(true,false);
 				}
 			}
-		}); 
+		});
 	// ------------------------------
-	
-	
-	
-	
+
+
+
+
 	// ------------------------------
 	// MOBILE SAFE MOD
 	// ios5 fix : if ios5 or older : safe mod is enabled
-	var ios5 = (navigator.userAgent.match(/OS 5_[0-9_]+ like Mac OS X/i) != null) || 
-		(navigator.userAgent.match(/OS 4_[0-9_]+ like Mac OS X/i) != null) || 
+	var ios5 = (navigator.userAgent.match(/OS 5_[0-9_]+ like Mac OS X/i) != null) ||
+		(navigator.userAgent.match(/OS 4_[0-9_]+ like Mac OS X/i) != null) ||
 		(navigator.userAgent.match(/OS 3_[0-9_]+ like Mac OS X/i) != null);
 	safeMod = $('html').attr('data-safeMod') === 'true';
 	mobileSafeMod = $('html').attr('data-mobileSafeMod') === 'true' && jQuery.browser.mobile;
 	safeMod = safeMod || mobileSafeMod || !Modernizr.csstransforms || !Modernizr.csstransforms3d || ios5;
 	if(safeMod) {
-		
-		$('html').removeClass('no-overflow').addClass('safe-mod');	
-		
+
+		$('html').removeClass('no-overflow').addClass('safe-mod');
+
 		setActivePage();
 		$.address.change(function() {
 			setActivePage();
 			});
-		
+
 	}
-	
+
 	// CHANGE PAGE
 	function setActivePage() {
-		
+
 			$('.page').removeClass('active').hide();
 			var path = $.address.path();
 			path = path.slice(1, path.length);
@@ -81,52 +81,52 @@ $(function() {
 				path = firstPage.slice(2,firstPage.length);
 				$.address.path(path);
 				}
-			
-			
+
+
 			if(Modernizr.csstransforms && Modernizr.csstransforms3d) { // modern browser
 				$('#'+ path).show().removeClass('animated ' + safeModPageOutAnimation).addClass('animated ' + safeModPageInAnimation);
 			} else { //old browser
 				$('#'+ path).fadeIn();
 				$('.page.active').hide();
-			}	
-			
+			}
+
 			$('#'+ path).addClass('active');
-			
+
 			setTimeout(function() { setCurrentMenuItem(); }, 100 );
-			
+
 			if(path.indexOf(portfolioKeyword) != -1) {
 				setupPortfolio();
 				setTimeout(function() { setupPortfolio(); }, 1000);
-			} 
+			}
 			if ($('.page.resume').hasClass('active')) {
 				emptyBars();
 				animateBars();
 			}
 			$("body").scrollTop(0);
-			
+
 			//iphone google map fix
 			if($('.page.active .map iframe').length) {
 				var map = $('.page.active .map').html();
 				$('page.active .map').empty();
 				setTimeout(function() { $('.page.active .map').html(map); }, 100);
 			}
-		
+
 	}
-	
-	
-	
-	
+
+
+
+
 	// if page url contains portfolio details url -> go to portfolio step
 	if(detailUrl != -1 && !safeMod) {
 		// remove detail url temporarly for jmpress to go to portfolio step immediately
 		$.address.path(portfolioKeyword);
 		}
-		
-	
+
+
 	// ------------------------------
 	// JMPRESS LAYOUT
 	// setup jmpress
-	if(!safeMod) { // don't run jmpress if mobile safe mode is on 
+	if(!safeMod) { // don't run jmpress if mobile safe mode is on
 		$('#pages').jmpress({
 			stepSelector: '.page',
 			fullscreen : false,
@@ -138,7 +138,7 @@ $(function() {
 				setCurrentMenuItem();
 				refreshScrollBars();
 				},
-			beforeChange : function( element, eventData ) { 
+			beforeChange : function( element, eventData ) {
 				var activePage = $(element[0]);
 				if(activePage.hasClass('resume')) {
 					animateBars();
@@ -146,125 +146,125 @@ $(function() {
 				}
 		});
 	}
-	
+
 	// ------------------------------
-	
-	
+
+
 	// if page url contains portfolio details url -> show details and fix url (jmpress conflict)
 	if(detailUrl != -1 ) {
 		// revert back detail url after jmpress itializes
-		setTimeout(function() { 
-			$.address.path(portfolioKeyword + "/" + detailUrl ); 
-			},2000);	
+		setTimeout(function() {
+			$.address.path(portfolioKeyword + "/" + detailUrl );
+			},2000);
 	}
-	
-	
-	
+
+
+
 	// ------------------------------
 	// NAV MENU
 	// setup menu clicks
 	$('#header nav ul a').click( function() {
 		if($(this).parent().hasClass('current-menu-item')) {
-			return;	
+			return;
 		}
 		$(this).addClass('waiting');
 		$('#header nav ul li').removeClass('current-menu-item');
 		});
 	// ------------------------------
-	
-	
-	
+
+
+
 	// ------------------------------
 	// MOBIL NAV MENU - SELECT LIST
 	/* Clone our navigation */
 	var mainNavigation = $('#header nav ul').clone();
-	
+
 	/* Replace unordered list with a "select" element to be populated with options, and create a variable to select our new empty option menu */
 	$('#header nav').prepend('<select class="mobile-nav"></select>');
 	var selectMenu = $('select.mobile-nav');
-	
+
 	/* Navigate our nav clone for information needed to populate options */
 	$(mainNavigation).children('li').each(function() {
 		 $(selectMenu).append(generateSelectLink($(this), ''));
 	});
-	
+
 	function generateSelectLink(li, prefix) {
 		var href = li.children('a').attr('href');
 		var text = li.children('a').text();
 		return '<option value="' + href+ '"> ' + prefix + text + '</option>';
 	}
-	
+
 	/* When our select menu is changed, change the window location to match the value of the selected option. */
 	$(selectMenu).change(function() {
 		location = this.options[this.selectedIndex].value;
 	});
 	// ------------------------------
-	
-	
-	
-	
+
+
+
+
 	// ------------------------------
 	// SETUP SCROLLBARS
 	if (!safeMod) {
-		
+
 		setupScrollBars();
-		
+
 		// ------------------------------
 		// REFRESH SCROLLBARS ON RESIZE
 		$(window).resize(function() {
 		  refreshScrollBars();
 		});
 		// ------------------------------
-		
+
 	}
 	// ------------------------------
-	
-	
-	
+
+
+
 	//**********************************
 	// PORTFOLIO FILTERING : ISOTOPE
 	if(!safeMod) {
 		setupPortfolio();
 	}
 	//**********************************
-	
-	
-	
+
+
+
 	//**********************************
 	// PORTFOLIO DETAILS
-	
+
 	// Show details
 	$("a.ajax").live('click',function() {
-		
+
 		var returnVal;
 		var url = $(this).attr('href');
 		var baseUrl = $.address.baseURL();
-		
+
 		if(url.indexOf(baseUrl) != -1) { // full url
 			var total = url.length;
-			detailUrl = url.slice(baseUrl.length+1, total);	
+			detailUrl = url.slice(baseUrl.length+1, total);
 		} else { // relative url
 			detailUrl = url;
 		}
-		
+
 		$.address.path(portfolioKeyword + '/' + detailUrl );
-		
+
 		//disable ajax page show for ie8
 		if(jQuery.browser.version.substring(0, 2) == "8." || jQuery.browser.version.substring(0, 2) == "7.")
-		{ 
+		{
 			returnVal = true;
 		} else {
 			returnVal = false;
 		}
 		return returnVal;
-		
+
 		});
 	//**********************************
-	
-	
-	
-	
-	
+
+
+
+
+
 	//**********************************
 	// SHOW LOADER ON AJAX CALLS
 	jQuery.ajaxSetup({
@@ -274,16 +274,16 @@ $(function() {
 		complete: function(){
 			//hideLoader();
 		},
-		success: function() { 
+		success: function() {
 			if(!giveDetailUrl) {
 				setTimeout(function() { hideLoader(); },500);
 			}
 		}
 	});
 	//**********************************
-	
-	
-	
+
+
+
 	// LIGHTBOX
 	//**********************************
 	//html5 validate fix
@@ -292,8 +292,8 @@ $(function() {
     });
 	setupLigtbox();
 	//**********************************
-	
-	
+
+
 	setTimeout(function() { $(".video-wrap").fitVids(); } , 100);
 
 });
@@ -311,7 +311,7 @@ window.onload = function() {
 		refreshScrollBars();
 	}
 	// ------------------------------
-	
+
 };
 // WINDOW ONLOAD
 
@@ -338,65 +338,65 @@ function showProjectDetails(url) {
 	var p = $('.p-overlay:not(.active)').first();
 	pActive = $('.p-overlay.active');
 	$('html').removeClass('no-overflow');
-	
+
 	if(pActive.length) {
-			hideProjectDetails();	  
+			hideProjectDetails();
 		}
-	
+
 	// ajax : fill data
 	p.empty().load($.address.baseURL() +  '/' + url + ' .portfolio-single', function() {
-		
+
 		// wait for images to be loaded
 		p.waitForImages(function() {
-			
+
 			hideLoader();
-			
+
 			// responsive videos
 			setTimeout(function() { $(".portfolio-single").fitVids(); } , 100);
-			
+
 			if(Modernizr.csstransforms && Modernizr.csstransforms3d) { // modern browser
 			p.removeClass('animated '+ outAnimation + " " + inAnimation ).addClass('animated '+ inAnimation).show();
 			} else { //old browser
-				p.fadeIn();	
+				p.fadeIn();
 			}
 			p.addClass('active');
-			
+
 			if(safeMod) {
 				$('#pages').css('max-height', p.height() - $('#header').outerHeight()).css('overflow','hidden');
 			}
-			
+
 		},null,true);
 	});
 }
 
 function hideProjectDetails(forever, safeClose) {
-	
+
 	$("body").scrollTop(0);
-	
+
 	// close completely by back link.
 	if(forever) {
 		pActive = $('.p-overlay.active');
 		if(!safeMod) {
 			$('html').addClass('no-overflow');
 		}
-		
+
 		if(!safeClose) {
 			// remove detail url
 			$.address.path(portfolioKeyword);
 		}
-		
+
 		if(safeMod) {
 			$('#pages').css('max-height', 'none' ).css('overflow','visible');
 		}
 	}
-	
+
 	pActive.removeClass('active');
-	
+
 	if(Modernizr.csstransforms && Modernizr.csstransforms3d) { // modern browser
 		pActive.removeClass('animated '+ inAnimation).addClass('animated '+ outAnimation);
 		setTimeout(function() { pActive.hide().removeClass(outAnimation).empty(); } ,1010)
 	} else { //old browser
-		pActive.fadeOut().empty();	
+		pActive.fadeOut().empty();
 	}
 }
 
@@ -404,12 +404,12 @@ function giveDetailUrl() {
 
 	var address = $.address.value();
 	var detailUrl;
-	
+
 	if (address.indexOf("/"+ portfolioKeyword + "/")!=-1 && address.length > portfolioKeyword.length + 2 ) {
 		var total = address.length;
 		detailUrl = address.slice(portfolioKeyword.length+2,total);
 	} else {
-		detailUrl = -1;	
+		detailUrl = -1;
 	}
 	return detailUrl;
 }
@@ -424,8 +424,8 @@ function giveDetailUrl() {
 
 // SETUP SCROLLBARS
 function setupScrollBars() {
-	if(!safeMod) { // don't run jscroll if mobile safe mode is on 
-		$(".iscroll-wrapper").jScroll({ 
+	if(!safeMod) { // don't run jscroll if mobile safe mode is on
+		$(".iscroll-wrapper").jScroll({
 			useTransition : jQuery.browser.touch ? true : false, //performance mode on for mobile devices
 			fadeScrollbar : jQuery.browser.mobile ? false : true, //performance mode on for mobile devices
 			lockDirection : false,
@@ -438,45 +438,45 @@ function setupScrollBars() {
 
 // REFRESH SCROLLBARS
 function refreshScrollBars() {
-	if(!safeMod) { // don't run jscroll if mobile safe mode is on 
+	if(!safeMod) { // don't run jscroll if mobile safe mode is on
 	 $(".iscroll-wrapper").jScroll("refresh");
 	}
-}	
+}
 
 // SET CURRENT MENU ITEM
 function setCurrentMenuItem() {
 	var activePageId = $('#pages .active').attr('id');
-	
+
 	// set default nav menu
 	$('#header nav ul a').removeClass('waiting');
 	$('#header nav ul a[href$=' + activePageId +']').parent().addClass('current-menu-item').siblings().removeClass('current-menu-item');
-	
+
 	// set mobile nav menu
 	$("select.mobile-nav option").attr("selected","");
 	$('select.mobile-nav option[value$=' + activePageId +']').attr("selected","selected");
-}	
-	
-	
+}
+
+
 //**********************************
 // PORTFOLIO FILTERING - ISOTOPE
 function setupPortfolio() {
-	
+
 	// cache container
 	var $container = $('#portfolio-items');
-	
+
 	if($container.length) {
 		$container.waitForImages(function() {
-			
+
 			// initialize isotope
 			$container.isotope({
 			  itemSelector : '.item',
 			  layoutMode : 'masonry',
 			  transformsEnabled : jQuery.browser.mobile ? false : true, //performance mode on for mobile devices
-			  onLayout: function( $elems, instance ) { 
+			  onLayout: function( $elems, instance ) {
 			   setTimeout( function() { refreshScrollBars(); } , 500);
 				}
 			});
-			
+
 			// filter items when filter link is clicked
 			$('#filters a').click(function(){
 			  var selector = $(this).attr('data-filter');
@@ -484,13 +484,13 @@ function setupPortfolio() {
 			  $(this).parent().addClass('current').siblings().removeClass('current');
 			  return false;
 			});
-			
+
 		},null,true);
 	}
 }
 // ------------------------------
 
-	
+
 
 // ------------------------------
 // CSS3 ANIMATED PROGRESS BARS
@@ -500,14 +500,14 @@ function animateBars() {
 		 var bar = $(this);
 		 setTimeout( function() { bar.find('.progress').addClass('easing-long').css('width', bar.attr('data-percent') + '%' ); } , duration);
 		});
-}	
-function emptyBars() {	
+}
+function emptyBars() {
 	$('.bar').each(function() {
 		 var bar = $(this);
-		 bar.find('.progress').removeClass('easing-long').css('width', 0 ); 
+		 bar.find('.progress').removeClass('easing-long').css('width', 0 );
 		});
 }
-// ------------------------------	
+// ------------------------------
 
 
 
@@ -524,7 +524,7 @@ function setupLigtbox() {
 			transitionOut : 'none',
 			overlayColor : '#000',
 			overlayOpacity : '.5',
-			onStart : function() { 
+			onStart : function() {
 				showLoader();
 				$('#fancybox-loading').remove();
 				$('#fancybox-right-ico').html('=');
@@ -536,17 +536,21 @@ function setupLigtbox() {
 				if ($(this).attr('href').indexOf("soundcloud.com") >= 0) {
 					$('#fancybox-content').height(166);
 				}
-				hideLoader(); 
+				hideLoader();
 			},
 			onCancel : function() {
-				hideLoader(); 
+				hideLoader();
 			}
 		});
-	}	
+	}
 }
-// ------------------------------	
+// ------------------------------
 
-
+function getAge(d1, d2) {
+	d2 = d2 || new Date();
+	var diff = d2.getTime() - d1.getTime();
+	return Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
+}
 // ------------------------------
 // AJAX LOADER
 function showLoader() {
@@ -569,6 +573,6 @@ function showLoader() {
 	});
 }
 function hideLoader() {
-	$(".loader").spin(false).hide(); 
+	$(".loader").spin(false).hide();
 }
 // ------------------------------
