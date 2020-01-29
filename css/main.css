@@ -13,7 +13,7 @@ html:not(.safe-mod) body { -webkit-user-select:none; -webkit-text-size-adjust:no
 html:not(.safe-mod) body .p-overlay { -webkit-user-select:auto; }
 .no-overflow body { overflow:hidden; }
 p,ul,ol { font-size:.875em; /* 16px */ line-height:160%; }
-img { width:auto; max-width:100%; height:auto; }
+.profile-img { width:auto; max-width:100%; height:auto; }
 a:focus { outline: none; }
 ul { list-style:square; }
 
